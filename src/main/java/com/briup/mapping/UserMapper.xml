@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.briup.dao.Dao">
+	<!-- 用户mapper -->
+	<resultMap id="BaseResultMap" type="com.briup.bean.Person">
+		<id column="id" property="id" jdbcType="BIGINT" />
+		<result column="code" property="code" jdbcType="VARCHAR" />
+		<result column="name" property="name" jdbcType="VARCHAR" />
+		<result column="type" property="type" jdbcType="VARCHAR" />
+		<result column="isDelete" property="isDelete" jdbcType="VARCHAR" />
+		<result column="password" property="password" jdbcType="VARCHAR" />
+
+	</resultMap>
+	<sql id="PersonList">
+		id,name,code,type,isDelete,password
+	</sql>
+	<!-- 通过name以及type查找用户 -->
+	<select id="searchPerson" resultMap="BaseResultMap"
+		parameterType="java.lang.String">
+		select
+		<include refid="PersonList" />
+		from person
+		where name = #{userName,jdbcType=VARCHAR} or code = #{userName,jdbcType=VARCHAR}
+	</select>
+
+
+	<insert id="addPerson" parameterType="com.briup.bean.Person">
+		insert into person
+		(name,code,type,isDelete,password)
+		values
+		(#{name,jdbcType=VARCHAR},#{code,jdbcType=VARCHAR},
+		#{type,jdbcType=VARCHAR},#{isDelete,jdbcType=VARCHAR},#{password,jdbcType=VARCHAR}
+		)
+	</insert>
+	<!-- 将人员从person表中删除 -->
+	<update id="deletePerson" parameterType="com.briup.bean.Person">
+		update person
+		set
+		isdelete = "0"
+		where code = #{code,jdbcType=INTEGER}
+	</update>
+	
+	<!-- 修改密码 -->
+	<update id="updatePwd" parameterType="com.briup.bean.Person">
+		update person
+		set
+		password = #{1}
+		where name = #{0}
+	</update>
+	
+	<!--服务器mapper -->
+	<resultMap id="StationMap" type="com.briup.bean.Station">
+		<id column="sid" property="sid" jdbcType="BIGINT" />
+		<result column="machinecode" property="machinecode" jdbcType="VARCHAR" />
+		<result column="latitude" property="latitude" jdbcType="VARCHAR" />
+		<result column="longitude" property="longitude" jdbcType="VARCHAR" />
+		<result column="city" property="city" jdbcType="VARCHAR" />
+		<result column="machineuser" property="machineuser" jdbcType="VARCHAR" />
+		<result column="yys" property="yys" jdbcType="VARCHAR" />
+		<result column="telephone" property="telephone" jdbcType="VARCHAR" />
+		<result column="offlinetime" property="offlinetime" jdbcType="VARCHAR" />
+		<result column="restarttime" property="restarttime" jdbcType="VARCHAR" />
+		<result column="outoflinedate" property="outoflinedate" jdbcType="VARCHAR" />
+		<result column="updatetime" property="updatetime" jdbcType="VARCHAR" />
+
+	</resultMap>
+
+	<sql id="StationList">
+		sid,machinecode,latitude,longitude,city,yys,telephone,machineuser,offlinetime,restarttime,outoflinedate,updatetime
+	</sql>
+
+	<!-- 添加服务器 -->
+	<insert id="addStation" parameterType="com.briup.bean.Station">
+		insert into Station
+		(machinecode,latitude,longitude,city,machineuser,offlinetime,restarttime,outoflinedate,updatetime,yys,telephone)
+		values
+		(#{machinecode,jdbcType=VARCHAR},#{latitude,jdbcType=VARCHAR},
+		#{longitude,jdbcType=VARCHAR},#{city,jdbcType=VARCHAR},#{machineuser,jdbcType=VARCHAR},#{offlinetime,jdbcType=VARCHAR}
+		,#{restarttime,jdbcType=VARCHAR},#{outoflinedate,jdbcType=VARCHAR},#{updatetime,jdbcType=VARCHAR},#{yys,jdbcType=VARCHAR},#{telephone,jdbcType=VARCHAR})
+	</insert>
+	
+	<!-- 查找服务器 -->
+	
+	<select id="searchStation" resultMap="StationMap" parameterType="com.briup.bean.Station">
+		select
+		<include refid="StationList" />
+		from station
+		where offlinetime&gt;=#{1} and restarttime&lt;=#{0}
+	</select>
+	<!-- 删除服务器-->
+	<delete id="deleteStation" parameterType="java.lang.Integer">
+	delete 
+	
+	from station
+	
+	where sid = #{sid,jdbcType=INTEGER}
+	</delete>
+	
+	<!-- 查找所有服务器 -->
+	
+	<select id="searchAllStation" resultMap="StationMap" parameterType="com.briup.bean.Station">
+		select
+		<include refid="StationList" />
+		from station
+	</select>
+	
+	
+	<!-- baseinfomapper -->
+	<resultMap id="BaseinfoMap" type="com.briup.bean.Baseinfo">
+		<id column="sid" property="sid" jdbcType="BIGINT" />
+		<result column="machinecode" property="machinecode" jdbcType="VARCHAR" />
+		<result column="latitude" property="latitude" jdbcType="VARCHAR" />
+		<result column="longitude" property="longitude" jdbcType="VARCHAR" />
+		<result column="city" property="city" jdbcType="VARCHAR" />
+		<result column="machineuser" property="machineuser" jdbcType="VARCHAR" />
+		<result column="yys" property="yys" jdbcType="VARCHAR" />
+		<result column="telephone" property="telephone" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<sql id="BaseinfoList">
+		sid,machinecode,latitude,longitude,city,yys,telephone,machineuser
+	</sql>
+	
+	<!-- 查找所有服务器 基础信息-->
+	
+	<select id="searchAllBaseinfo" resultMap="BaseinfoMap" parameterType="com.briup.bean.Baseinfo">
+		select
+		<include refid="BaseinfoList" />
+		from baseinfo
+	</select>
+	
+	<!-- 添加服务器基础信息 -->
+	<insert id="addBaseinfo" parameterType="com.briup.bean.Baseinfo">
+		insert into baseinfo
+		(machinecode,latitude,longitude,city,machineuser,yys,telephone)
+		values
+		(#{machinecode,jdbcType=VARCHAR},#{latitude,jdbcType=VARCHAR},
+		#{longitude,jdbcType=VARCHAR},#{city,jdbcType=VARCHAR},#{machineuser,jdbcType=VARCHAR},#{yys,jdbcType=VARCHAR},#{telephone,jdbcType=VARCHAR})
+	</insert>
+	
+	<!-- 删除服务器-->
+	<delete id="deleteBaseinfo" parameterType="java.lang.Integer">
+	delete 
+	from baseinfo
+	where sid = #{sid,jdbcType=INTEGER}
+	</delete>
+	
+	<!-- 更新服务器基础信息 -->
+	<update id="updateBaseinfo" parameterType="com.briup.bean.Baseinfo">
+		update baseinfo
+		set
+		machinecode
+		= #{machinecode,jdbcType=VARCHAR},
+		latitude =
+		#{latitude,jdbcType=VARCHAR},
+		longitude =
+		#{longitude,jdbcType=VARCHAR},
+		city =
+		#{city,jdbcType=VARCHAR},
+		machineuser =
+		#{machineuser,jdbcType=VARCHAR},
+		yys =
+		#{yys,jdbcType=VARCHAR},
+		telephone =
+		#{telephone,jdbcType=VARCHAR}
+		where sid = #{sid,jdbcType=INTEGER}
+	</update>
+	
+
+</mapper>
